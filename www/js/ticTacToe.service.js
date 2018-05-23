@@ -53,17 +53,35 @@
         function makeMove(value, cells, difficulty) {
             return $q.resolve().then(
                 function() {
-                    if (typeof difficulty === 'undefined' || difficulty === 'easy') {
-                        do {
-                            var random = Math.round(Math.random() * 9);
-
-                            if (cells[random] === -1 && cells[random] !== value) {
-                                return random;
-                            }
-                        } while (true);
-                    }
+                    // if (typeof difficulty === 'undefined' || difficulty === 'easy') {
+                    //     TicTacToeService.makeEasyMove();
+                    // } else if (difficulty === 'hard') {
+                        TicTacToeService.makeHardMove();
+                    // }
                 }
             );
+        }
+
+        TicTacToeService.makeHardMove = makeHardMove;
+        function makeHardMove(value, cells) {
+            do {
+                var random = Math.round(Math.random() * 9);
+
+                if (cells[random] === -1 && cells[random] !== value) {
+                    return random;
+                }
+            } while (true);
+        }
+
+        TicTacToeService.makeEasyMove = makeEasyMove;
+        function makeEasyMove(value, cells) {
+            do {
+                var random = Math.round(Math.random() * 9);
+
+                if (cells[random] === -1 && cells[random] !== value) {
+                    return random;
+                }
+            } while (true);
         }
 
         TicTacToeService.reset = reset;
