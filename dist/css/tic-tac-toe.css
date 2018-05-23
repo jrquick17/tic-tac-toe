@@ -1,0 +1,26 @@
+.board {
+  padding: 40px;
+  text-align: center;
+  height: 100%;
+  width: 100%; }
+
+.x-cell {
+  background: red; }
+
+.o-cell {
+  background: blue; }
+
+div.col-4 {
+  padding: 20px; }
+
+div.col-4:nth-child(4),
+div.col-4:nth-child(5),
+div.col-4:nth-child(6) {
+  border-bottom: black solid 2px;
+  border-top: black solid 2px; }
+
+div.col-4:nth-child(2),
+div.col-4:nth-child(5),
+div.col-4:nth-child(8) {
+  border-left: black solid 2px;
+  border-right: black solid 2px; }
