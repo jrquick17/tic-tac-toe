@@ -60,16 +60,18 @@
         }
         
         TicTacToeService.makeMove = makeMove;
-        function makeMove(value, cells) {
+        function makeMove(value, cells, difficulty) {
             return $q.resolve().then(
                 function() {
-                    for (var i = 0; i < 9; i++) {
-                        if (cells[i] === -1 && cells[i] !== value) {
-                            return i;
-                        }
-                    }
+                    if (typeof difficulty === 'undefined' || difficulty === 'easy') {
+                        do {
+                            var random = Math.round(Math.random() * 9);
 
-                    return null;
+                            if (cells[random] === -1 && cells[random] !== value) {
+                                return random;
+                            }
+                        } while (true);
+                    }
                 }
             );
         }
