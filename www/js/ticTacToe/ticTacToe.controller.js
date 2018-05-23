@@ -52,6 +52,11 @@
                         'YOU CANNOT GO THERE!'
                     );
                 }
+            } else if (TicTacToeController.isGameOver) {
+                TicTacToeController.showMessage(
+                    false,
+                    'THE GAME IS ALREADY OVER.'
+                );
             } else {
                 TicTacToeController.showMessage(
                     false,
@@ -99,14 +104,30 @@
             ).then(
                 function(winner) {
                     if (winner === TicTacToeController.opponenentValue) {
+                        TicTacToeController.isGameOver = true;
+
                         TicTacToeController.showMessage(
                             false,
                             'HAHA LOSER.'
                         );
                     } else if (winner === TicTacToeController.userValue) {
+                        TicTacToeController.isGameOver = true;
+
                         TicTacToeController.showMessage(
                             false,
                             'GOOD JOB.'
+                        );
+                    } else if (winner === -1) {
+                        TicTacToeController.isGameOver = true;
+
+                        TicTacToeController.showMessage(
+                            false,
+                            'WE TIED.'
+                        );
+
+                        TicTacToeController.showMessage(
+                            true,
+                            'WE TIED.'
                         );
                     } else {
                         TicTacToeController.isUsersTurn = !TicTacToeController.isUsersTurn;
@@ -128,6 +149,8 @@
                 -1, -1, -1,
                 -1, -1, -1
             ];
+
+            TicTacToeController.isGameOver = false;
 
             TicTacToeController.opponenentValue = 1;
 
