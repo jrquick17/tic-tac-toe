@@ -116,15 +116,30 @@
 
         TicTacToeController.beginUsersTurn = beginUsersTurn;
         function beginUsersTurn() {
-            alert('Your turn.');
+            TicTacToeController.showMessage(
+                false,
+                'IT IS YOUR TURN.'
+            );
         }
 
         TicTacToeController.select = select;
         function select(cell) {
             if (TicTacToeController.isUsersTurn) {
-                TicTacToeController.cells[cell] = TicTacToeController.userValue;
+                if (TicTacToeController.cells[cell] === -1) {
+                    TicTacToeController.cells[cell] = TicTacToeController.userValue;
 
-                TicTacToeController.switchTurn();
+                    TicTacToeController.switchTurn();
+                } else {
+                    TicTacToeController.showMessage(
+                        false,
+                        'YOU CANNOT GO THERE!'
+                    );
+                }
+            } else {
+                TicTacToeController.showMessage(
+                    false,
+                    'SIMMER DOWN! IT\'S MY TURN STILL!'
+                );
             }
         }
 
@@ -140,6 +155,13 @@
                 TicTacToeController.userValue = 0;
                 TicTacToeController.isUsersTurn = false;
             }
+        }
+
+        TicTacToeController.showMessage = showMessage;
+        function showMessage(fromUser, message) {
+            var selector = fromUser ? '.user' : '.opponent';
+
+            $(selector).attr('data-content', message).popover('show');
         }
 
         TicTacToeController.start = start;
@@ -160,9 +182,15 @@
             ).then(
                 function(winner) {
                     if (winner === TicTacToeController.opponenentValue) {
-                        alert('Haha loser!');
+                        TicTacToeController.showMessage(
+                            false,
+                            'HAHA LOSER.'
+                        );
                     } else if (winner === TicTacToeController.userValue) {
-                        alert('Beginner\'s luck!');
+                        TicTacToeController.showMessage(
+                            false,
+                            'GOOD JOB.'
+                        );
                     } else {
                         TicTacToeController.isUsersTurn = !TicTacToeController.isUsersTurn;
 
@@ -216,7 +244,7 @@
             controllerAs: 'ctrl',
             restrict:     'E',
             scope:        {},
-            template:'<div class="board"><div>{{ ctrl.isUsersTurn ? \'YOUR TURN\' : \'OPPONENT\\\'S TURN\' }} <span data-ng-if="!ctrl.isUsersTurn">(YOUR OPPONENT IS THINKING...)</span><div class="row"><div data-ng-repeat="cell in ctrl.cells track by $index" class="col-4" data-ng-class="{ \'disabled\': !ctrl.isUsersTurn || cell !== -1, \'x-cell\': cell === 0, \'o-cell\': cell === 1 }" data-ng-click="ctrl.select($index)">{{ cell }}</div></div></div></div>'
+            template:'<div class="global"><div class="people row"><a class="opponent col-6" tabindex="0" data-content data-placement="right" data-toggle="popover" data-trigger="focus"><img src="img/opponent.png"></a> <a class="user col-6" tabindex="1" data-content data-placement="left" data-toggle="popover" data-trigger="focus"><img src="img/user.png"></a></div><div class="board row"><div data-ng-repeat="cell in ctrl.cells track by $index" class="col-4" data-ng-class="{ \'disabled\': !ctrl.isUsersTurn || cell !== -1, \'x-cell\': cell === 0, \'o-cell\': cell === 1 }" data-ng-click="ctrl.select($index)">{{ cell }}</div></div></div>'
         };
     }
 })();

@@ -1,8 +1,15 @@
 .board {
   padding: 40px;
   text-align: center;
+  height: 70vh;
+  width: 100%; }
+
+.global {
   height: 100%;
   width: 100%; }
+
+.people {
+  height: 30vh; }
 
 .x-cell {
   background: red; }
@@ -24,3 +31,7 @@ div.col-4:nth-child(5),
 div.col-4:nth-child(8) {
   border-left: black solid 2px;
   border-right: black solid 2px; }
+
+img {
+  height: 100%;
+  width: 100%; }

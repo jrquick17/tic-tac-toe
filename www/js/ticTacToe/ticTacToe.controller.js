@@ -33,15 +33,30 @@
 
         TicTacToeController.beginUsersTurn = beginUsersTurn;
         function beginUsersTurn() {
-            alert('Your turn.');
+            TicTacToeController.showMessage(
+                false,
+                'IT IS YOUR TURN.'
+            );
         }
 
         TicTacToeController.select = select;
         function select(cell) {
             if (TicTacToeController.isUsersTurn) {
-                TicTacToeController.cells[cell] = TicTacToeController.userValue;
+                if (TicTacToeController.cells[cell] === -1) {
+                    TicTacToeController.cells[cell] = TicTacToeController.userValue;
 
-                TicTacToeController.switchTurn();
+                    TicTacToeController.switchTurn();
+                } else {
+                    TicTacToeController.showMessage(
+                        false,
+                        'YOU CANNOT GO THERE!'
+                    );
+                }
+            } else {
+                TicTacToeController.showMessage(
+                    false,
+                    'SIMMER DOWN! IT\'S MY TURN STILL!'
+                );
             }
         }
 
@@ -57,6 +72,13 @@
                 TicTacToeController.userValue = 0;
                 TicTacToeController.isUsersTurn = false;
             }
+        }
+
+        TicTacToeController.showMessage = showMessage;
+        function showMessage(fromUser, message) {
+            var selector = fromUser ? '.user' : '.opponent';
+
+            $(selector).attr('data-content', message).popover('show');
         }
 
         TicTacToeController.start = start;
@@ -77,9 +99,15 @@
             ).then(
                 function(winner) {
                     if (winner === TicTacToeController.opponenentValue) {
-                        alert('Haha loser!');
+                        TicTacToeController.showMessage(
+                            false,
+                            'HAHA LOSER.'
+                        );
                     } else if (winner === TicTacToeController.userValue) {
-                        alert('Beginner\'s luck!');
+                        TicTacToeController.showMessage(
+                            false,
+                            'GOOD JOB.'
+                        );
                     } else {
                         TicTacToeController.isUsersTurn = !TicTacToeController.isUsersTurn;
 
