@@ -1,37 +1,56 @@
 .board
-    padding:    40px
-    text-align: center
-    height:     70vh
-    width:      100%
+  padding:    40px
+  text-align: center
+  height:     70vh
+  width:      100%
 
 .global
-    height: 100%
-    width:  100%
+  margin: 0 auto
+  max-width: 550px
 
-.people
-    height: 30vh
+.players
+  height: 30vh
 
-.x-cell
-    background: red
+.empty-cell
+  background-color: white
 
-.o-cell
-    background: blue
+.opponent-x-cell
+  background: url('../../img/opponent-x-cell.png') no-repeat center center
+
+.opponent-o-cell
+  background: url('../../img/opponent-o-cell.png') no-repeat center center
+
+.user-x-cell
+  background: url('../../img/user-x-cell.png') no-repeat center center
+
+.user-o-cell
+  background: url('../../img/user-o-cell.png') no-repeat center center
+
+.cell
+  -webkit-background-size: cover
+  -moz-background-size: cover
+  -o-background-size: cover
+  background-size: cover
 
 div.col-4
-    padding: 20px
+  padding: 20px
 
 div.col-4:nth-child(4),
 div.col-4:nth-child(5),
 div.col-4:nth-child(6)
-    border-bottom: black solid 2px
-    border-top:    black solid 2px
+  border-bottom: black solid 2px
+  border-top:    black solid 2px
 
 div.col-4:nth-child(2),
 div.col-4:nth-child(5),
 div.col-4:nth-child(8)
-    border-left:  black solid 2px
-    border-right: black solid 2px
+  border-left:  black solid 2px
+  border-right: black solid 2px
 
 img
-    height: 100%
-    width:  100%
+  height: 100%
+  width:  100%
+  
+.popover
+  left: -110px !important
+  top:  -30px !important
