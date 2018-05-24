@@ -15,6 +15,19 @@
     ) {
         var TicTacToeService = this;
 
+        TicTacToeService.getAvailableMoves = getAvailableMoves;
+        function getAvailableMoves(cells) {
+            var availableMoves = [];
+
+            for (var i = 0; i < 9; i++) {
+                if (cells[i] === -1) {
+                    availableMoves.push(i);
+                }
+            }
+
+            return availableMoves;
+        }
+
         TicTacToeService.getWinner = getWinner;
         function getWinner(cells) {
             return $q.resolve().then(
@@ -70,13 +83,14 @@
 
         TicTacToeService.makeHardMove = makeHardMove;
         function makeHardMove(value, cells) {
-            do {
-                var random = Math.round(Math.random() * 9);
+            cells = angular.copy(cells);
 
-                if (cells[random] === -1 && cells[random] !== value) {
-                    return random;
-                }
-            } while (true);
+            var availableMoves = TicTacToeService.getAvailableMoves(cells);
+            var numberOfAvailableMoves = availableMoves.length;
+
+            for (var i = 0; i < numberOfAvailableMoves; i++) {
+
+            }
         }
 
         TicTacToeService.makeEasyMove = makeEasyMove;
