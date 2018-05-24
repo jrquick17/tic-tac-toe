@@ -153,7 +153,12 @@
 
         TicTacToeController.select = select;
         function select(cell) {
-            if (TicTacToeController.isUsersTurn) {
+            if (TicTacToeController.isGameOver) {
+                TicTacToeController.showMessage(
+                    false,
+                    'THE GAME IS ALREADY OVER.'
+                );
+            } else if (TicTacToeController.isUsersTurn) {
                 if (TicTacToeController.cells[cell] === -1) {
                     TicTacToeController.cells[cell] = TicTacToeController.userValue;
 
@@ -164,11 +169,6 @@
                         'YOU CANNOT GO THERE!'
                     );
                 }
-            } else if (TicTacToeController.isGameOver) {
-                TicTacToeController.showMessage(
-                    false,
-                    'THE GAME IS ALREADY OVER.'
-                );
             } else {
                 TicTacToeController.showMessage(
                     false,
