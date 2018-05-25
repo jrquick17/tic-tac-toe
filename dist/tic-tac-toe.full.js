@@ -495,6 +495,65 @@
     'use strict';
 
     angular.module('ticTacToe').controller(
+        'GameTreeController',
+        GameTreeController
+    );
+
+    GameTreeController.$inject = [
+        'OpponentService',
+        '$scope'
+    ];
+
+    function GameTreeController(
+        OpponentService,
+        $scope
+    ) {
+        var GameTreeController = this;
+
+        $scope.$watch(
+            function() {
+                return OpponentService.getTree();
+            },
+            function(tree) {
+                GameTreeController.tree = tree;
+            }
+        );
+
+        GameTreeController.reset = reset;
+        function reset() {
+
+        }
+
+        GameTreeController.init = init;
+        function init() {
+            GameTreeController.reset();
+        }
+
+        GameTreeController.init();
+    }
+})();
+(function() {
+    'use strict';
+
+    angular.module('ticTacToe').directive(
+        'gameTree',
+        gameTree
+    );
+
+    function gameTree() {
+        return {
+            controller:   'GameTreeController',
+            controllerAs: 'ctrl',
+            restrict:     'E',
+            scope:        {},
+            template:'<div><div class="row"><board class="col" cells="ctrl.tree.parentNode.cells" user-value="ctrl.tree.parentNode.value"></board></div><div class="row" data-ng-repeat="child in ctrl.tree.parentNode.children"><div class="col"><board cells="child.cells" user-value="ctrl.tree.parentNode.value"></board></div></div></div>'
+        };
+    }
+})();
+(function() {
+    'use strict';
+
+    angular.module('ticTacToe').controller(
         'BoardController',
         BoardController
     );
@@ -574,65 +633,6 @@
                 userValue: '='
             },
             template:'<div class="board row"><div data-ng-repeat="cell in ctrl.cells track by $index" class="col-4 cell" data-ng-class="{ \'empty-cell\': cell === -1, \'opponent-x-cell\': cell === 0 && ctrl.opponentValue === 0, \'opponent-o-cell\': cell === 1 && ctrl.opponentValue === 1, \'user-x-cell\': cell === 0 && ctrl.userValue === 0, \'user-o-cell\': cell === 1 && ctrl.userValue === 1 }" data-ng-click="ctrl.click($index)"></div></div>'
-        };
-    }
-})();
-(function() {
-    'use strict';
-
-    angular.module('ticTacToe').controller(
-        'GameTreeController',
-        GameTreeController
-    );
-
-    GameTreeController.$inject = [
-        'OpponentService',
-        '$scope'
-    ];
-
-    function GameTreeController(
-        OpponentService,
-        $scope
-    ) {
-        var GameTreeController = this;
-
-        $scope.$watch(
-            function() {
-                return OpponentService.getTree();
-            },
-            function(tree) {
-                GameTreeController.tree = tree;
-            }
-        );
-
-        GameTreeController.reset = reset;
-        function reset() {
-
-        }
-
-        GameTreeController.init = init;
-        function init() {
-            GameTreeController.reset();
-        }
-
-        GameTreeController.init();
-    }
-})();
-(function() {
-    'use strict';
-
-    angular.module('ticTacToe').directive(
-        'gameTree',
-        gameTree
-    );
-
-    function gameTree() {
-        return {
-            controller:   'GameTreeController',
-            controllerAs: 'ctrl',
-            restrict:     'E',
-            scope:        {},
-            template:'<div><div class="row"><board class="col" cells="ctrl.tree.parentNode.cells" user-value="ctrl.tree.parentNode.value"></board></div><div class="row" data-ng-repeat="child in ctrl.tree.parentNode.children"><div class="col"><board cells="child.cells" user-value="ctrl.tree.parentNode.value"></board></div></div></div>'
         };
     }
 })();
