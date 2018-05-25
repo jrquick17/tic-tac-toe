@@ -7,11 +7,13 @@
     );
 
     TicTacToeController.$inject = [
+        'MessageService',
         'OpponentService',
         'TicTacToeService'
     ];
 
     function TicTacToeController(
+        MessageService,
         OpponentService,
         TicTacToeService
     ) {
@@ -110,26 +112,21 @@
 
                 TicTacToeController.showMessage(
                     false,
-                    'HAHA LOSER.'
+                    MessageService.getLossMessage()
                 );
             } else if (winner === TicTacToeController.userValue) {
                 TicTacToeController.isGameOver = true;
 
                 TicTacToeController.showMessage(
                     false,
-                    'GOOD JOB.'
+                    MessageService.getWinMessage()
                 );
             } else if (winner === -1) {
                 TicTacToeController.isGameOver = true;
 
                 TicTacToeController.showMessage(
                     false,
-                    'WE TIED.'
-                );
-
-                TicTacToeController.showMessage(
-                    true,
-                    'WE TIED.'
+                    MessageService.getTieMessage()
                 );
             } else {
                 TicTacToeController.isUsersTurn = !TicTacToeController.isUsersTurn;
