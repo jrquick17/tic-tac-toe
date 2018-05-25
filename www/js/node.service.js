@@ -93,7 +93,7 @@
                 for (var i = 0; i < childCount; i++) {
                     var child = this.children[i];
 
-                    points += child.getPoints(value);
+                    points += child.getPoints(value) * .5;
                 }
 
                 return points;

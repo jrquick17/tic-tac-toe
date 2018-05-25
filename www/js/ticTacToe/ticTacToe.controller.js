@@ -22,12 +22,12 @@
         TicTacToeController.beginOpponentsTurn = beginOpponentsTurn;
         function beginOpponentsTurn() {
             return OpponentService.makeMove(
-                TicTacToeController.opponenentValue,
+                TicTacToeController.opponentValue,
                 TicTacToeController.cells
             ).then(
                 function(cell) {
                     if (cell !== null) {
-                        TicTacToeController.cells[cell] = TicTacToeController.opponenentValue;
+                        TicTacToeController.cells[cell] = TicTacToeController.opponentValue;
 
                         TicTacToeController.switchTurn();
                     }
@@ -73,11 +73,11 @@
         function setOrder() {
             var random = Math.floor(Math.random() * 100);
             if (random % 2 === 0) {
-                TicTacToeController.opponenentValue = 0;
+                TicTacToeController.opponentValue = 0;
                 TicTacToeController.userValue = 1;
                 TicTacToeController.isUsersTurn = true;
             } else {
-                TicTacToeController.opponenentValue = 1;
+                TicTacToeController.opponentValue = 1;
                 TicTacToeController.userValue = 0;
                 TicTacToeController.isUsersTurn = false;
             }
@@ -107,19 +107,19 @@
                 TicTacToeController.cells
             );
 
-            if (winner === TicTacToeController.opponenentValue) {
+            if (winner === TicTacToeController.opponentValue) {
                 TicTacToeController.isGameOver = true;
 
                 TicTacToeController.showMessage(
                     false,
-                    MessageService.getLossMessage()
+                    MessageService.getWinMessage()
                 );
             } else if (winner === TicTacToeController.userValue) {
                 TicTacToeController.isGameOver = true;
 
                 TicTacToeController.showMessage(
                     false,
-                    MessageService.getWinMessage()
+                    MessageService.getLossMessage()
                 );
             } else if (winner === -1) {
                 TicTacToeController.isGameOver = true;
@@ -149,7 +149,7 @@
 
             TicTacToeController.isGameOver = false;
 
-            TicTacToeController.opponenentValue = 1;
+            TicTacToeController.opponentValue = 1;
 
             TicTacToeController.stats = false;
 

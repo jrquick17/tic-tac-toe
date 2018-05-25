@@ -16,6 +16,11 @@
         TreeService
     ) {
         var OpponentService = this;
+
+        OpponentService.getTree = getTree;
+        function getTree() {
+            return OpponentService.tree;
+        }
         
         OpponentService.makeMove = makeMove;
         function makeMove(value, cells, difficulty) {
@@ -32,11 +37,11 @@
 
         OpponentService.makeHardMove = makeHardMove;
         function makeHardMove(value, cells) {
-            var tree = TreeService.getTree(cells, value);
+            OpponentService.tree = TreeService.getTree(cells, value);
 
-            tree.expand();
+            OpponentService.tree.expand();
 
-            var moves = tree.getMoves();
+            var moves = OpponentService.tree.getMoves();
             var moveCount = moves.length;
 
             var best = null;
@@ -68,7 +73,7 @@
 
         OpponentService.reset = reset;
         function reset() {
-
+            OpponentService.tree = {};
         }
         
         OpponentService.reset();

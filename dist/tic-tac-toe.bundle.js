@@ -170,7 +170,7 @@
                 for (var i = 0; i < childCount; i++) {
                     var child = this.children[i];
 
-                    points += child.getPoints(value);
+                    points += child.getPoints(value) * .5;
                 }
 
                 return points;
@@ -200,6 +200,11 @@
     function OpponentService($q, TreeService) {
         var OpponentService = this;
 
+        OpponentService.getTree = getTree;
+        function getTree() {
+            return OpponentService.tree;
+        }
+
         OpponentService.makeMove = makeMove;
         function makeMove(value, cells, difficulty) {
             return $q.resolve().then(function () {
@@ -213,11 +218,11 @@
 
         OpponentService.makeHardMove = makeHardMove;
         function makeHardMove(value, cells) {
-            var tree = TreeService.getTree(cells, value);
+            OpponentService.tree = TreeService.getTree(cells, value);
 
-            tree.expand();
+            OpponentService.tree.expand();
 
-            var moves = tree.getMoves();
+            var moves = OpponentService.tree.getMoves();
             var moveCount = moves.length;
 
             var best = null;
@@ -248,7 +253,9 @@
         }
 
         OpponentService.reset = reset;
-        function reset() {}
+        function reset() {
+            OpponentService.tree = {};
+        }
 
         OpponentService.reset();
 
@@ -381,6 +388,107 @@
 (function () {
     'use strict';
 
+    angular.module('ticTacToe').controller('BoardController', BoardController);
+
+    BoardController.$inject = ['OpponentService', '$scope', 'TicTacToeService'];
+
+    function BoardController(OpponentService, $scope, TicTacToeService) {
+        var BoardController = this;
+
+        $scope.$watch('cells', function (cells) {
+            BoardController.cells = cells;
+        });
+
+        $scope.$watch('onClick', function (onClick) {
+            BoardController.onClick = onClick;
+        });
+
+        $scope.$watch('userValue', function (userValue) {
+            BoardController.opponentValue = TicTacToeService.getOtherValue(userValue);
+
+            BoardController.userValue = userValue;
+        });
+
+        BoardController.click = click;
+        function click(where) {
+            BoardController.onClick(where);
+        }
+
+        BoardController.reset = reset;
+        function reset() {}
+
+        BoardController.init = init;
+        function init() {
+            BoardController.reset();
+        }
+
+        BoardController.init();
+    }
+})();
+(function () {
+    'use strict';
+
+    angular.module('ticTacToe').directive('board', board);
+
+    function board() {
+        return {
+            controller: 'BoardController',
+            controllerAs: 'ctrl',
+            restrict: 'E',
+            scope: {
+                cells: '=',
+                onClick: '=',
+                userValue: '='
+            },
+            template: '<div class="board row"><div data-ng-repeat="cell in ctrl.cells track by $index" class="col-4 cell" data-ng-class="{ \'empty-cell\': cell === -1, \'opponent-x-cell\': cell === 0 && ctrl.opponentValue === 0, \'opponent-o-cell\': cell === 1 && ctrl.opponentValue === 1, \'user-x-cell\': cell === 0 && ctrl.userValue === 0, \'user-o-cell\': cell === 1 && ctrl.userValue === 1 }" data-ng-click="ctrl.click($index)"></div></div>'
+        };
+    }
+})();
+(function () {
+    'use strict';
+
+    angular.module('ticTacToe').controller('GameTreeController', GameTreeController);
+
+    GameTreeController.$inject = ['OpponentService', '$scope'];
+
+    function GameTreeController(OpponentService, $scope) {
+        var GameTreeController = this;
+
+        $scope.$watch(function () {
+            return OpponentService.getTree();
+        }, function (tree) {
+            GameTreeController.tree = tree;
+        });
+
+        GameTreeController.reset = reset;
+        function reset() {}
+
+        GameTreeController.init = init;
+        function init() {
+            GameTreeController.reset();
+        }
+
+        GameTreeController.init();
+    }
+})();
+(function () {
+    'use strict';
+
+    angular.module('ticTacToe').directive('gameTree', gameTree);
+
+    function gameTree() {
+        return {
+            controller: 'GameTreeController',
+            controllerAs: 'ctrl',
+            restrict: 'E',
+            scope: {},
+            template: '<div><div class="row"><board class="col" cells="ctrl.tree.parentNode.cells" user-value="ctrl.tree.parentNode.value"></board></div><div class="row" data-ng-repeat="child in ctrl.tree.parentNode.children"><div class="col"><board cells="child.cells" user-value="ctrl.tree.parentNode.value"></board></div></div></div>'
+        };
+    }
+})();
+(function () {
+    'use strict';
+
     angular.module('ticTacToe').controller('TicTacToeController', TicTacToeController);
 
     TicTacToeController.$inject = ['MessageService', 'OpponentService', 'TicTacToeService'];
@@ -390,9 +498,9 @@
 
         TicTacToeController.beginOpponentsTurn = beginOpponentsTurn;
         function beginOpponentsTurn() {
-            return OpponentService.makeMove(TicTacToeController.opponenentValue, TicTacToeController.cells).then(function (cell) {
+            return OpponentService.makeMove(TicTacToeController.opponentValue, TicTacToeController.cells).then(function (cell) {
                 if (cell !== null) {
-                    TicTacToeController.cells[cell] = TicTacToeController.opponenentValue;
+                    TicTacToeController.cells[cell] = TicTacToeController.opponentValue;
 
                     TicTacToeController.switchTurn();
                 }
@@ -425,11 +533,11 @@
         function setOrder() {
             var random = Math.floor(Math.random() * 100);
             if (random % 2 === 0) {
-                TicTacToeController.opponenentValue = 0;
+                TicTacToeController.opponentValue = 0;
                 TicTacToeController.userValue = 1;
                 TicTacToeController.isUsersTurn = true;
             } else {
-                TicTacToeController.opponenentValue = 1;
+                TicTacToeController.opponentValue = 1;
                 TicTacToeController.userValue = 0;
                 TicTacToeController.isUsersTurn = false;
             }
@@ -457,14 +565,14 @@
         function switchTurn() {
             var winner = TicTacToeService.getWinner(TicTacToeController.cells);
 
-            if (winner === TicTacToeController.opponenentValue) {
-                TicTacToeController.isGameOver = true;
-
-                TicTacToeController.showMessage(false, MessageService.getLossMessage());
-            } else if (winner === TicTacToeController.userValue) {
+            if (winner === TicTacToeController.opponentValue) {
                 TicTacToeController.isGameOver = true;
 
                 TicTacToeController.showMessage(false, MessageService.getWinMessage());
+            } else if (winner === TicTacToeController.userValue) {
+                TicTacToeController.isGameOver = true;
+
+                TicTacToeController.showMessage(false, MessageService.getLossMessage());
             } else if (winner === -1) {
                 TicTacToeController.isGameOver = true;
 
@@ -486,7 +594,7 @@
 
             TicTacToeController.isGameOver = false;
 
-            TicTacToeController.opponenentValue = 1;
+            TicTacToeController.opponentValue = 1;
 
             TicTacToeController.stats = false;
 
@@ -515,7 +623,7 @@
             controllerAs: 'ctrl',
             restrict: 'E',
             scope: {},
-            template: '<div class="global"><div class="players row"><a class="opponent col-6" tabindex="0" data-content data-placement="right" data-toggle="popover" data-trigger="focus"><img src="img/opponent.png"></a> <a class="user col-6" tabindex="1" data-content data-placement="left" data-toggle="popover" data-trigger="focus"><img src="img/user.png"></a></div><div class="board row"><div data-ng-repeat="cell in ctrl.cells track by $index" class="col-4 cell" data-ng-class="{ \'empty-cell\': cell === -1, \'opponent-x-cell\': cell === 0 && ctrl.opponenentValue === 0, \'opponent-o-cell\': cell === 1 && ctrl.opponenentValue === 1, \'user-x-cell\': cell === 0 && ctrl.userValue === 0, \'user-o-cell\': cell === 1 && ctrl.userValue === 1 }" data-ng-click="ctrl.select($index)"></div></div></div>'
+            template: '<div class="global"><div class="players row"><a class="opponent col-6" tabindex="0" data-content data-placement="right" data-toggle="popover" data-trigger="focus"><img src="img/opponent.png"></a> <a class="user col-6" tabindex="1" data-content data-placement="left" data-toggle="popover" data-trigger="focus"><img src="img/user.png"></a></div><board cells="ctrl.cells" on-click="ctrl.select" user-value="ctrl.userValue"></board><game-tree></game-tree></div>'
         };
     }
 })();

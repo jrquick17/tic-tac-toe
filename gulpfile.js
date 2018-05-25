@@ -15,6 +15,20 @@ var source = require('vinyl-source-stream');
 var sourcemaps = require('gulp-sourcemaps');
 var uglify = require('gulp-uglify');
 
+gulp.task('embed-board', function () {
+    gulp.src('./www/js/board/directive/*.js')
+        .pipe(embedTemplates())
+        .on('error', errorWarning)
+        .pipe(gulp.dest('./www/js/board'));
+});
+
+gulp.task('embed-gameTree', function () {
+    gulp.src('./www/js/gameTree/directive/*.js')
+        .pipe(embedTemplates())
+        .on('error', errorWarning)
+        .pipe(gulp.dest('./www/js/gameTree'));
+});
+
 gulp.task('embed-ticTacToe', function () {
     gulp.src('./www/js/ticTacToe/directive/*.js')
         .pipe(embedTemplates())
@@ -23,6 +37,8 @@ gulp.task('embed-ticTacToe', function () {
 });
 
 gulp.task('embed', [
+    'embed-board',
+    'embed-gameTree',
     'embed-ticTacToe'
 ]);
 
