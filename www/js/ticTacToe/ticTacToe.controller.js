@@ -7,17 +7,19 @@
     );
 
     TicTacToeController.$inject = [
+        'OpponentService',
         'TicTacToeService'
     ];
 
     function TicTacToeController(
+        OpponentService,
         TicTacToeService
     ) {
         var TicTacToeController = this;
 
         TicTacToeController.beginOpponentsTurn = beginOpponentsTurn;
         function beginOpponentsTurn() {
-            return TicTacToeService.makeMove(
+            return OpponentService.makeMove(
                 TicTacToeController.opponenentValue,
                 TicTacToeController.cells
             ).then(
@@ -99,47 +101,45 @@
 
         TicTacToeController.switchTurn = switchTurn;
         function switchTurn() {
-            TicTacToeService.getWinner(
+            var winner = TicTacToeService.getWinner(
                 TicTacToeController.cells
-            ).then(
-                function(winner) {
-                    if (winner === TicTacToeController.opponenentValue) {
-                        TicTacToeController.isGameOver = true;
-
-                        TicTacToeController.showMessage(
-                            false,
-                            'HAHA LOSER.'
-                        );
-                    } else if (winner === TicTacToeController.userValue) {
-                        TicTacToeController.isGameOver = true;
-
-                        TicTacToeController.showMessage(
-                            false,
-                            'GOOD JOB.'
-                        );
-                    } else if (winner === -1) {
-                        TicTacToeController.isGameOver = true;
-
-                        TicTacToeController.showMessage(
-                            false,
-                            'WE TIED.'
-                        );
-
-                        TicTacToeController.showMessage(
-                            true,
-                            'WE TIED.'
-                        );
-                    } else {
-                        TicTacToeController.isUsersTurn = !TicTacToeController.isUsersTurn;
-
-                        if (TicTacToeController.isUsersTurn) {
-                            TicTacToeController.beginUsersTurn();
-                        } else {
-                            TicTacToeController.beginOpponentsTurn();
-                        }
-                    }
-                }
             );
+
+            if (winner === TicTacToeController.opponenentValue) {
+                TicTacToeController.isGameOver = true;
+
+                TicTacToeController.showMessage(
+                    false,
+                    'HAHA LOSER.'
+                );
+            } else if (winner === TicTacToeController.userValue) {
+                TicTacToeController.isGameOver = true;
+
+                TicTacToeController.showMessage(
+                    false,
+                    'GOOD JOB.'
+                );
+            } else if (winner === -1) {
+                TicTacToeController.isGameOver = true;
+
+                TicTacToeController.showMessage(
+                    false,
+                    'WE TIED.'
+                );
+
+                TicTacToeController.showMessage(
+                    true,
+                    'WE TIED.'
+                );
+            } else {
+                TicTacToeController.isUsersTurn = !TicTacToeController.isUsersTurn;
+
+                if (TicTacToeController.isUsersTurn) {
+                    TicTacToeController.beginUsersTurn();
+                } else {
+                    TicTacToeController.beginOpponentsTurn();
+                }
+            }
         }
 
         TicTacToeController.reset = reset;
