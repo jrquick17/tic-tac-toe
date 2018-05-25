@@ -29,7 +29,9 @@
                     this.cells
                 );
 
-                var childrenValue = TicTacToeService.getOtherValue(this.value);
+                var grandChildrenValue = TicTacToeService.getOtherValue(
+                    this.value
+                );
 
                 var numberOfAvailableMoves = availableMoves.length;
 
@@ -37,11 +39,11 @@
                     var move = availableMoves[i];
 
                     var tempCells = angular.copy(this.cells);
-                    tempCells[move] = childrenValue;
+                    tempCells[move] = this.value;
 
                     var newChild = NodeService.getNode(
                         tempCells,
-                        childrenValue,
+                        grandChildrenValue,
                         move,
                         this
                     );
@@ -93,7 +95,7 @@
                 for (var i = 0; i < childCount; i++) {
                     var child = this.children[i];
 
-                    points += child.getPoints(value) * .5;
+                    points += child.getPoints(value);
                 }
 
                 return points;
