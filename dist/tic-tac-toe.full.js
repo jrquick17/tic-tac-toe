@@ -20,6 +20,19 @@
     ) {
         var TicTacToeService = this;
 
+        TicTacToeService.getAvailableMoves = getAvailableMoves;
+        function getAvailableMoves(cells) {
+            var availableMoves = [];
+
+            for (var i = 0; i < 9; i++) {
+                if (cells[i] === -1) {
+                    availableMoves.push(i);
+                }
+            }
+
+            return availableMoves;
+        }
+
         TicTacToeService.getWinner = getWinner;
         function getWinner(cells) {
             return $q.resolve().then(
@@ -75,13 +88,75 @@
 
         TicTacToeService.makeHardMove = makeHardMove;
         function makeHardMove(value, cells) {
-            do {
-                var random = Math.round(Math.random() * 9);
+            var parentNode = {
+                move:   null,
+                parent: null,
+                points: null,
+                cells:  cells,
+                value:  value
+            };
 
-                if (cells[random] === -1 && cells[random] !== value) {
-                    return random;
+            var tree = [
+                parentNode
+            ];
+
+            TicTacToeService.expandTree(tree);
+        }
+
+        TicTacToeService.getChildren = getChildren;
+        function getChildren(node) {
+            var availableMoves = TicTacToeService.getAvailableMoves(node.cells);
+            var numberOfAvailableMoves = availableMoves.length;
+
+            var value = TicTacToeService.getOtherValue(node.value);
+
+            for (var i = 0; i < numberOfAvailableMoves; i++) {
+                var move = availableMoves[i];
+
+                var tempCells = angular.copy(node.cells);
+                tempCells[move] = value;
+
+                var points = 0;
+
+                var winner = TicTacToeService.getWinner(tempCells);
+                if (winner === value || winner === -1) {
+                    points = 1;
                 }
-            } while (true);
+
+                return {
+                    children: [],
+                    move:     move,
+                    parent:   node,
+                    points:   points,
+                    cells:    tempCells,
+                    value:    value
+                };
+            }
+        }
+
+        TicTacToeService.getOtherValue = getOtherValue;
+        function getOtherValue(value) {
+            return value === 1 ? 0 : 1;
+        }
+
+        TicTacToeService.expandTree = buildTree;
+        function buildTree(tree) {
+            var treeLength = tree.length;
+
+            for (var j = 0; j < treeLength; j++) {
+                var node = tree[j];
+
+                var children = node.children;
+                var childrenLength = children.length;
+
+                for (var k = 0; k < childrenLength; k++) {
+                    var childNode = node.children[k];
+
+                    childNode.children = TicTacToeService.getChildren(childNode);
+                }
+            }
+
+            return tree;
         }
 
         TicTacToeService.makeEasyMove = makeEasyMove;
