@@ -64,6 +64,24 @@
                 }
             };
 
+            Node.fromParent = function() {
+                var count = 0;
+
+                var node = this;
+                var parent = null;
+
+                do {
+                    parent = node.parent;
+                    if (parent !== null) {
+                        count++;
+
+                        node = parent;
+                    }
+                } while (parent !== null);
+
+                return count;
+            };
+
             Node.getCells = function() {
                 return this.cells;
             };
@@ -95,7 +113,7 @@
                 for (var i = 0; i < childCount; i++) {
                     var child = this.children[i];
 
-                    points += child.getPoints(value);
+                    points += child.getPoints(value) / child.fromParent();
                 }
 
                 return points;
