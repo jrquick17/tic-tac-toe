@@ -145,6 +145,12 @@
             }
         }
 
+        TicTacToeController.restart = restart;
+        function restart() {
+            TicTacToeController.reset();
+            TicTacToeController.start();
+        }
+
         TicTacToeController.reset = reset;
         function reset() {
             TicTacToeController.cells = [
@@ -156,8 +162,6 @@
             TicTacToeController.isGameOver = false;
 
             TicTacToeController.opponentValue = 1;
-
-            TicTacToeController.resetStats();
 
             TicTacToeController.userValue = 0;
 
@@ -176,6 +180,8 @@
         TicTacToeController.init = init;
         function init() {
             TicTacToeController.reset();
+            TicTacToeController.resetStats();
+
             TicTacToeController.start();
         }
 

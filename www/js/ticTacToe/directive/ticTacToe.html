@@ -23,6 +23,14 @@
                 ties="ctrl.ties"
                 wins="ctrl.wins"></scoreboard>
 
+    <div data-ng-if="ctrl.isGameOver"
+         class="row">
+        <button class="btn btn-primary btn-lg btn-block"
+                data-ng-click="ctrl.restart()">
+            PLAY AGAIN
+        </button>
+    </div>
+
     <board cells="ctrl.cells"
            on-click="ctrl.select"
            user-value="ctrl.userValue"></board>
