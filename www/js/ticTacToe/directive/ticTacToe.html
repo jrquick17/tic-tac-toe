@@ -8,6 +8,7 @@
            data-trigger="focus">
             <img src="img/opponent.png"/>
         </a>
+
         <a class="user col-6"
            tabindex="1"
            data-content=""
@@ -17,6 +18,11 @@
             <img src="img/user.png"/>
         </a>
     </div>
+
+    <scoreboard losses="ctrl.losses"
+                ties="ctrl.ties"
+                wins="ctrl.wins"></scoreboard>
+
     <board cells="ctrl.cells"
            on-click="ctrl.select"
            user-value="ctrl.userValue"></board>

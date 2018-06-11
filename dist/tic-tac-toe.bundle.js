@@ -406,48 +406,6 @@
 (function () {
     'use strict';
 
-    angular.module('ticTacToe').controller('GameTreeController', GameTreeController);
-
-    GameTreeController.$inject = ['OpponentService', '$scope'];
-
-    function GameTreeController(OpponentService, $scope) {
-        var GameTreeController = this;
-
-        $scope.$watch(function () {
-            return OpponentService.getTree();
-        }, function (tree) {
-            GameTreeController.tree = tree;
-        });
-
-        GameTreeController.reset = reset;
-        function reset() {}
-
-        GameTreeController.init = init;
-        function init() {
-            GameTreeController.reset();
-        }
-
-        GameTreeController.init();
-    }
-})();
-(function () {
-    'use strict';
-
-    angular.module('ticTacToe').directive('gameTree', gameTree);
-
-    function gameTree() {
-        return {
-            controller: 'GameTreeController',
-            controllerAs: 'ctrl',
-            restrict: 'E',
-            scope: {},
-            template: '<div><div class="row"><board class="col" cells="ctrl.tree.parentNode.cells" user-value="ctrl.tree.parentNode.value"></board></div><div class="row" data-ng-repeat="child in ctrl.tree.parentNode.children"><div class="col"><board cells="child.cells" user-value="ctrl.tree.parentNode.value"></board></div></div></div>'
-        };
-    }
-})();
-(function () {
-    'use strict';
-
     angular.module('ticTacToe').controller('BoardController', BoardController);
 
     BoardController.$inject = ['OpponentService', '$scope', 'TicTacToeService'];
@@ -507,6 +465,58 @@
 (function () {
     'use strict';
 
+    angular.module('ticTacToe').controller('ScoreboardController', ScoreboardController);
+
+    ScoreboardController.$inject = ['$scope'];
+
+    function ScoreboardController($scope) {
+        var ScoreboardController = this;
+
+        $scope.$watch('losses', function (losses) {
+            ScoreboardController.losses = losses;
+        });
+
+        $scope.$watch('ties', function (ties) {
+            ScoreboardController.ties = ties;
+        });
+
+        $scope.$watch('wins', function (wins) {
+            ScoreboardController.wins = wins;
+        });
+
+        ScoreboardController.reset = reset;
+        function reset() {}
+
+        ScoreboardController.init = init;
+        function init() {
+            ScoreboardController.reset();
+        }
+
+        ScoreboardController.init();
+    }
+})();
+(function () {
+    'use strict';
+
+    angular.module('ticTacToe').directive('scoreboard', scoreboard);
+
+    function scoreboard() {
+        return {
+            controller: 'ScoreboardController',
+            controllerAs: 'ctrl',
+            restrict: 'E',
+            scope: {
+                losses: '=',
+                ties: '=',
+                wins: '='
+            },
+            template: '<div class="row"><div class="col text-center"><h3>WINS</h3><p>{{ ctrl.wins }}</p></div><div class="col text-center"><h3>LOSSES</h3><p>{{ ctrl.losses }}</p></div><div class="col text-center"><h3>TIES</h3><p>{{ ctrl.ties }}</p></div></div>'
+        };
+    }
+})();
+(function () {
+    'use strict';
+
     angular.module('ticTacToe').controller('TicTacToeController', TicTacToeController);
 
     TicTacToeController.$inject = ['MessageService', 'OpponentService', 'TicTacToeService'];
@@ -527,23 +537,23 @@
 
         TicTacToeController.beginUsersTurn = beginUsersTurn;
         function beginUsersTurn() {
-            TicTacToeController.showMessage(false, 'IT IS YOUR TURN.');
+            TicTacToeController.showDialogue(false, 'IT IS YOUR TURN.');
         }
 
         TicTacToeController.select = select;
         function select(cell) {
             if (TicTacToeController.isGameOver) {
-                TicTacToeController.showMessage(false, 'THE GAME IS ALREADY OVER.');
+                TicTacToeController.showDialogue(false, 'THE GAME IS ALREADY OVER.');
             } else if (TicTacToeController.isUsersTurn) {
                 if (TicTacToeController.cells[cell] === -1) {
                     TicTacToeController.cells[cell] = TicTacToeController.userValue;
 
                     TicTacToeController.switchTurn();
                 } else {
-                    TicTacToeController.showMessage(false, 'YOU CANNOT GO THERE!');
+                    TicTacToeController.showDialogue(false, 'YOU CANNOT GO THERE!');
                 }
             } else {
-                TicTacToeController.showMessage(false, 'SIMMER DOWN! IT\'S MY TURN STILL!');
+                TicTacToeController.showDialogue(false, 'SIMMER DOWN! IT\'S MY TURN STILL!');
             }
         }
 
@@ -561,8 +571,8 @@
             }
         }
 
-        TicTacToeController.showMessage = showMessage;
-        function showMessage(fromUser, message) {
+        TicTacToeController.showDialogue = showDialogue;
+        function showDialogue(fromUser, message) {
             var selector = fromUser ? '.user' : '.opponent';
 
             $(selector).attr('data-content', message).popover('show');
@@ -586,15 +596,21 @@
             if (winner === TicTacToeController.opponentValue) {
                 TicTacToeController.isGameOver = true;
 
-                TicTacToeController.showMessage(false, MessageService.getWinMessage());
+                TicTacToeController.showDialogue(false, MessageService.getWinMessage());
+
+                TicTacToeController.losses++;
             } else if (winner === TicTacToeController.userValue) {
                 TicTacToeController.isGameOver = true;
 
-                TicTacToeController.showMessage(false, MessageService.getLossMessage());
+                TicTacToeController.showDialogue(false, MessageService.getLossMessage());
+
+                TicTacToeController.wins++;
             } else if (winner === -1) {
                 TicTacToeController.isGameOver = true;
 
-                TicTacToeController.showMessage(false, MessageService.getTieMessage());
+                TicTacToeController.showDialogue(false, MessageService.getTieMessage());
+
+                TicTacToeController.ties++;
             } else {
                 TicTacToeController.isUsersTurn = !TicTacToeController.isUsersTurn;
 
@@ -614,11 +630,20 @@
 
             TicTacToeController.opponentValue = 1;
 
-            TicTacToeController.stats = false;
+            TicTacToeController.resetStats();
 
             TicTacToeController.userValue = 0;
 
             TicTacToeController.isUsersTurn = false;
+        }
+
+        TicTacToeController.resetStats = resetStats;
+        function resetStats() {
+            TicTacToeController.losses = 0;
+
+            TicTacToeController.ties = 0;
+
+            TicTacToeController.wins = 0;
         }
 
         TicTacToeController.init = init;
@@ -641,7 +666,7 @@
             controllerAs: 'ctrl',
             restrict: 'E',
             scope: {},
-            template: '<div class="global"><div class="players row"><a class="opponent col-6" tabindex="0" data-content data-placement="right" data-toggle="popover" data-trigger="focus"><img src="img/opponent.png"></a> <a class="user col-6" tabindex="1" data-content data-placement="left" data-toggle="popover" data-trigger="focus"><img src="img/user.png"></a></div><board cells="ctrl.cells" on-click="ctrl.select" user-value="ctrl.userValue"></board><game-tree></game-tree></div>'
+            template: '<div class="global"><div class="players row"><a class="opponent col-6" tabindex="0" data-content data-placement="right" data-toggle="popover" data-trigger="focus"><img src="img/opponent.png"></a> <a class="user col-6" tabindex="1" data-content data-placement="left" data-toggle="popover" data-trigger="focus"><img src="img/user.png"></a></div><scoreboard losses="ctrl.losses" ties="ctrl.ties" wins="ctrl.wins"></scoreboard><board cells="ctrl.cells" on-click="ctrl.select" user-value="ctrl.userValue"></board></div>'
         };
     }
 })();

@@ -37,7 +37,7 @@
 
         TicTacToeController.beginUsersTurn = beginUsersTurn;
         function beginUsersTurn() {
-            TicTacToeController.showMessage(
+            TicTacToeController.showDialogue(
                 false,
                 'IT IS YOUR TURN.'
             );
@@ -46,7 +46,7 @@
         TicTacToeController.select = select;
         function select(cell) {
             if (TicTacToeController.isGameOver) {
-                TicTacToeController.showMessage(
+                TicTacToeController.showDialogue(
                     false,
                     'THE GAME IS ALREADY OVER.'
                 );
@@ -56,13 +56,13 @@
 
                     TicTacToeController.switchTurn();
                 } else {
-                    TicTacToeController.showMessage(
+                    TicTacToeController.showDialogue(
                         false,
                         'YOU CANNOT GO THERE!'
                     );
                 }
             } else {
-                TicTacToeController.showMessage(
+                TicTacToeController.showDialogue(
                     false,
                     'SIMMER DOWN! IT\'S MY TURN STILL!'
                 );
@@ -83,8 +83,8 @@
             }
         }
 
-        TicTacToeController.showMessage = showMessage;
-        function showMessage(fromUser, message) {
+        TicTacToeController.showDialogue = showDialogue;
+        function showDialogue(fromUser, message) {
             var selector = fromUser ? '.user' : '.opponent';
 
             $(selector).attr('data-content', message).popover('show');
@@ -110,24 +110,30 @@
             if (winner === TicTacToeController.opponentValue) {
                 TicTacToeController.isGameOver = true;
 
-                TicTacToeController.showMessage(
+                TicTacToeController.showDialogue(
                     false,
                     MessageService.getWinMessage()
                 );
+
+                TicTacToeController.losses++;
             } else if (winner === TicTacToeController.userValue) {
                 TicTacToeController.isGameOver = true;
 
-                TicTacToeController.showMessage(
+                TicTacToeController.showDialogue(
                     false,
                     MessageService.getLossMessage()
                 );
+
+                TicTacToeController.wins++;
             } else if (winner === -1) {
                 TicTacToeController.isGameOver = true;
 
-                TicTacToeController.showMessage(
+                TicTacToeController.showDialogue(
                     false,
                     MessageService.getTieMessage()
                 );
+
+                TicTacToeController.ties++;
             } else {
                 TicTacToeController.isUsersTurn = !TicTacToeController.isUsersTurn;
 
@@ -151,11 +157,20 @@
 
             TicTacToeController.opponentValue = 1;
 
-            TicTacToeController.stats = false;
+            TicTacToeController.resetStats();
 
             TicTacToeController.userValue = 0;
 
             TicTacToeController.isUsersTurn = false;
+        }
+
+        TicTacToeController.resetStats = resetStats;
+        function resetStats() {
+            TicTacToeController.losses = 0;
+
+            TicTacToeController.ties = 0;
+
+            TicTacToeController.wins = 0;
         }
 
         TicTacToeController.init = init;

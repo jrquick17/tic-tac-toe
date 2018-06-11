@@ -22,6 +22,13 @@ gulp.task('embed-board', function () {
         .pipe(gulp.dest('./www/js/board'));
 });
 
+gulp.task('embed-scoreboard', function () {
+    gulp.src('./www/js/scoreboard/directive/*.js')
+        .pipe(embedTemplates())
+        .on('error', errorWarning)
+        .pipe(gulp.dest('./www/js/scoreboard'));
+});
+
 gulp.task('embed-ticTacToe', function () {
     gulp.src('./www/js/ticTacToe/directive/*.js')
         .pipe(embedTemplates())
@@ -31,6 +38,7 @@ gulp.task('embed-ticTacToe', function () {
 
 gulp.task('embed', [
     'embed-board',
+    'embed-scoreboard',
     'embed-ticTacToe'
 ]);
 
