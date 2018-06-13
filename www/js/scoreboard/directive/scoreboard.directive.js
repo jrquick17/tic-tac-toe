@@ -12,9 +12,10 @@
             controllerAs: 'ctrl',
             restrict:     'E',
             scope:        {
-                losses: '=',
-                ties:   '=',
-                wins:   '='
+                isGameOver: '=',
+                losses:     '=',
+                ties:       '=',
+                wins:       '='
             },
             templateUrl:  'scoreboard.html'
         };

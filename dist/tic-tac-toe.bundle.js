@@ -458,59 +458,7 @@
                 onClick: '=',
                 userValue: '='
             },
-            template: '<div class="board row"><div data-ng-repeat="cell in ctrl.cells track by $index" class="col-4 cell" data-ng-class="{ \'empty-cell\': cell === -1, \'opponent-x-cell\': cell === 0 && ctrl.opponentValue === 0, \'opponent-o-cell\': cell === 1 && ctrl.opponentValue === 1, \'user-x-cell\': cell === 0 && ctrl.userValue === 0, \'user-o-cell\': cell === 1 && ctrl.userValue === 1 }" data-ng-click="ctrl.click($index)"></div></div>'
-        };
-    }
-})();
-(function () {
-    'use strict';
-
-    angular.module('ticTacToe').controller('ScoreboardController', ScoreboardController);
-
-    ScoreboardController.$inject = ['$scope'];
-
-    function ScoreboardController($scope) {
-        var ScoreboardController = this;
-
-        $scope.$watch('losses', function (losses) {
-            ScoreboardController.losses = losses;
-        });
-
-        $scope.$watch('ties', function (ties) {
-            ScoreboardController.ties = ties;
-        });
-
-        $scope.$watch('wins', function (wins) {
-            ScoreboardController.wins = wins;
-        });
-
-        ScoreboardController.reset = reset;
-        function reset() {}
-
-        ScoreboardController.init = init;
-        function init() {
-            ScoreboardController.reset();
-        }
-
-        ScoreboardController.init();
-    }
-})();
-(function () {
-    'use strict';
-
-    angular.module('ticTacToe').directive('scoreboard', scoreboard);
-
-    function scoreboard() {
-        return {
-            controller: 'ScoreboardController',
-            controllerAs: 'ctrl',
-            restrict: 'E',
-            scope: {
-                losses: '=',
-                ties: '=',
-                wins: '='
-            },
-            template: '<div class="row"><div class="col text-center"><h3>WINS</h3><p>{{ ctrl.wins }}</p></div><div class="col text-center"><h3>LOSSES</h3><p>{{ ctrl.losses }}</p></div><div class="col text-center"><h3>TIES</h3><p>{{ ctrl.ties }}</p></div></div>'
+            template: '<div class="board row animated zoomIn"><div data-ng-repeat="cell in ctrl.cells track by $index" class="col-4 cell" data-ng-class="{ \'empty-cell\': cell === -1, \'animated fadeIn\': cell !== -1, \'opponent-x-cell\': cell === 0 && ctrl.opponentValue === 0, \'opponent-o-cell\': cell === 1 && ctrl.opponentValue === 1, \'user-x-cell\': cell === 0 && ctrl.userValue === 0, \'user-o-cell\': cell === 1 && ctrl.userValue === 1 }" data-ng-click="ctrl.click($index)"></div></div>'
         };
     }
 })();
@@ -538,6 +486,31 @@
         TicTacToeController.beginUsersTurn = beginUsersTurn;
         function beginUsersTurn() {
             TicTacToeController.showDialogue(false, 'IT IS YOUR TURN.');
+        }
+
+        TicTacToeController.endGame = endGame;
+        function endGame(result) {
+            if (!TicTacToeController.isGameOver) {
+                TicTacToeController.isGameOver = true;
+
+                var message = '';
+
+                if (result === true) {
+                    TicTacToeController.wins++;
+
+                    message = MessageService.getLossMessage();
+                } else if (result === false) {
+                    TicTacToeController.losses++;
+
+                    message = MessageService.getWinMessage();
+                } else {
+                    TicTacToeController.ties++;
+
+                    message = MessageService.getTieMessage();
+                }
+
+                TicTacToeController.showDialogue(false, message);
+            }
         }
 
         TicTacToeController.select = select;
@@ -594,23 +567,11 @@
             var winner = TicTacToeService.getWinner(TicTacToeController.cells);
 
             if (winner === TicTacToeController.opponentValue) {
-                TicTacToeController.isGameOver = true;
-
-                TicTacToeController.showDialogue(false, MessageService.getWinMessage());
-
-                TicTacToeController.losses++;
+                TicTacToeController.endGame(false);
             } else if (winner === TicTacToeController.userValue) {
-                TicTacToeController.isGameOver = true;
-
-                TicTacToeController.showDialogue(false, MessageService.getLossMessage());
-
-                TicTacToeController.wins++;
+                TicTacToeController.endGame(true);
             } else if (winner === -1) {
-                TicTacToeController.isGameOver = true;
-
-                TicTacToeController.showDialogue(false, MessageService.getTieMessage());
-
-                TicTacToeController.ties++;
+                TicTacToeController.endGame(null);
             } else {
                 TicTacToeController.isUsersTurn = !TicTacToeController.isUsersTurn;
 
@@ -672,7 +633,76 @@
             controllerAs: 'ctrl',
             restrict: 'E',
             scope: {},
-            template: '<div class="global"><div class="players row"><a class="opponent col-6" tabindex="0" data-content data-placement="right" data-toggle="popover" data-trigger="focus"><img src="img/opponent.png"></a> <a class="user col-6" tabindex="1" data-content data-placement="left" data-toggle="popover" data-trigger="focus"><img src="img/user.png"></a></div><scoreboard losses="ctrl.losses" ties="ctrl.ties" wins="ctrl.wins"></scoreboard><div data-ng-if="ctrl.isGameOver" class="row"><button class="btn btn-primary btn-lg btn-block" data-ng-click="ctrl.restart()">PLAY AGAIN</button></div><board cells="ctrl.cells" on-click="ctrl.select" user-value="ctrl.userValue"></board></div>'
+            template: '<div class="global"><div class="players row"><a class="user col-6 animated bounceInLeft" tabindex="0" data-content data-placement="right" data-toggle="popover" data-trigger="focus"><img src="img/user.png"></a> <a class="opponent col-6 animated bounceInRight" tabindex="1" data-content data-placement="left" data-toggle="popover" data-trigger="focus"><img src="img/opponent.png"></a></div><scoreboard is-game-over="ctrl.isGameOver" losses="ctrl.losses" ties="ctrl.ties" wins="ctrl.wins"></scoreboard><div data-ng-if="ctrl.isGameOver" class="row animated fadeInDown"><button class="btn btn-primary btn-lg btn-block" data-ng-click="ctrl.restart()">PLAY AGAIN</button></div><board cells="ctrl.cells" on-click="ctrl.select" user-value="ctrl.userValue"></board></div>'
+        };
+    }
+})();
+(function () {
+    'use strict';
+
+    angular.module('ticTacToe').controller('ScoreboardController', ScoreboardController);
+
+    ScoreboardController.$inject = ['$scope'];
+
+    function ScoreboardController($scope) {
+        var ScoreboardController = this;
+
+        $scope.$watch('isGameOver', function (isGameOver) {
+            ScoreboardController.isGameOver = isGameOver;
+        });
+
+        $scope.$watch('losses', function (losses) {
+            if (ScoreboardController.losses < losses) {
+                ScoreboardController.lastResult = false;
+            }
+
+            ScoreboardController.losses = losses;
+        });
+
+        $scope.$watch('ties', function (ties) {
+            if (ScoreboardController.ties < ties) {
+                ScoreboardController.lastResult = null;
+            }
+
+            ScoreboardController.ties = ties;
+        });
+
+        $scope.$watch('wins', function (wins) {
+            if (ScoreboardController.wins < wins) {
+                ScoreboardController.lastResult = true;
+            }
+
+            ScoreboardController.wins = wins;
+        });
+
+        ScoreboardController.reset = reset;
+        function reset() {}
+
+        ScoreboardController.init = init;
+        function init() {
+            ScoreboardController.reset();
+        }
+
+        ScoreboardController.init();
+    }
+})();
+(function () {
+    'use strict';
+
+    angular.module('ticTacToe').directive('scoreboard', scoreboard);
+
+    function scoreboard() {
+        return {
+            controller: 'ScoreboardController',
+            controllerAs: 'ctrl',
+            restrict: 'E',
+            scope: {
+                isGameOver: '=',
+                losses: '=',
+                ties: '=',
+                wins: '='
+            },
+            template: '<div class="row"><div class="col text-center animated jackInTheBox" data-ng-class="{ \'animated flip\': ctrl.isGameOver && ctrl.lastResult === true }"><h3>WINS</h3><p>{{ ctrl.wins }}</p></div><div class="col text-center animated jackInTheBox" data-ng-class="{ \'animated flip\': ctrl.isGameOver && ctrl.lastResult === null }"><h3>TIES</h3><p>{{ ctrl.ties }}</p></div><div class="col text-center animated jackInTheBox" data-ng-class="{ \'animated flip\': ctrl.isGameOver && ctrl.lastResult === false }"><h3>LOSSES</h3><p>{{ ctrl.losses }}</p></div></div>'
         };
     }
 })();

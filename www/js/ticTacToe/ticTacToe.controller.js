@@ -43,6 +43,34 @@
             );
         }
 
+        TicTacToeController.endGame = endGame;
+        function endGame(result) {
+            if (!TicTacToeController.isGameOver) {
+                TicTacToeController.isGameOver = true;
+
+                var message = '';
+
+                if (result === true) {
+                    TicTacToeController.wins++;
+
+                    message = MessageService.getLossMessage();
+                } else if (result === false) {
+                    TicTacToeController.losses++;
+
+                    message = MessageService.getWinMessage();
+                } else {
+                    TicTacToeController.ties++;
+
+                    message = MessageService.getTieMessage();
+                }
+
+                TicTacToeController.showDialogue(
+                    false,
+                    message
+                );
+            }
+        }
+
         TicTacToeController.select = select;
         function select(cell) {
             if (TicTacToeController.isGameOver) {
@@ -108,32 +136,11 @@
             );
 
             if (winner === TicTacToeController.opponentValue) {
-                TicTacToeController.isGameOver = true;
-
-                TicTacToeController.showDialogue(
-                    false,
-                    MessageService.getWinMessage()
-                );
-
-                TicTacToeController.losses++;
+                TicTacToeController.endGame(false);
             } else if (winner === TicTacToeController.userValue) {
-                TicTacToeController.isGameOver = true;
-
-                TicTacToeController.showDialogue(
-                    false,
-                    MessageService.getLossMessage()
-                );
-
-                TicTacToeController.wins++;
+                TicTacToeController.endGame(true);
             } else if (winner === -1) {
-                TicTacToeController.isGameOver = true;
-
-                TicTacToeController.showDialogue(
-                    false,
-                    MessageService.getTieMessage()
-                );
-
-                TicTacToeController.ties++;
+                TicTacToeController.endGame(null);
             } else {
                 TicTacToeController.isUsersTurn = !TicTacToeController.isUsersTurn;
 
