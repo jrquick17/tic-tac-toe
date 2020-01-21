@@ -581,99 +581,6 @@
     'use strict';
 
     angular.module('ticTacToe').controller(
-        'ScoreboardController',
-        ScoreboardController
-    );
-
-    ScoreboardController.$inject = [
-        '$scope'
-    ];
-
-    function ScoreboardController(
-        $scope
-    ) {
-        var ScoreboardController = this;
-
-        $scope.$watch(
-            'isGameOver',
-            function(isGameOver) {
-                ScoreboardController.isGameOver = isGameOver;
-            }
-        );
-
-        $scope.$watch(
-            'losses',
-            function(losses) {
-                if (ScoreboardController.losses < losses) {
-                    ScoreboardController.lastResult = false;
-                }
-
-                ScoreboardController.losses = losses;
-            }
-        );
-
-        $scope.$watch(
-            'ties',
-            function(ties) {
-                if (ScoreboardController.ties < ties) {
-                    ScoreboardController.lastResult = null;
-                }
-
-                ScoreboardController.ties = ties;
-            }
-        );
-
-        $scope.$watch(
-            'wins',
-            function(wins) {
-                if (ScoreboardController.wins < wins) {
-                    ScoreboardController.lastResult = true;
-                }
-
-                ScoreboardController.wins = wins;
-            }
-        );
-
-        ScoreboardController.reset = reset;
-        function reset() {
-
-        }
-
-        ScoreboardController.init = init;
-        function init() {
-            ScoreboardController.reset();
-        }
-
-        ScoreboardController.init();
-    }
-})();
-(function() {
-    'use strict';
-
-    angular.module('ticTacToe').directive(
-        'scoreboard',
-        scoreboard
-    );
-
-    function scoreboard() {
-        return {
-            controller:   'ScoreboardController',
-            controllerAs: 'ctrl',
-            restrict:     'E',
-            scope:        {
-                isGameOver: '=',
-                losses:     '=',
-                ties:       '=',
-                wins:       '='
-            },
-            template:'<div class="row"><div class="col text-center animated jackInTheBox" data-ng-class="{ \'animated flip\': ctrl.isGameOver && ctrl.lastResult === true }"><h3>WINS</h3><p>{{ ctrl.wins }}</p></div><div class="col text-center animated jackInTheBox" data-ng-class="{ \'animated flip\': ctrl.isGameOver && ctrl.lastResult === null }"><h3>TIES</h3><p>{{ ctrl.ties }}</p></div><div class="col text-center animated jackInTheBox" data-ng-class="{ \'animated flip\': ctrl.isGameOver && ctrl.lastResult === false }"><h3>LOSSES</h3><p>{{ ctrl.losses }}</p></div></div>'
-        };
-    }
-})();
-(function() {
-    'use strict';
-
-    angular.module('ticTacToe').controller(
         'TicTacToeController',
         TicTacToeController
     );
@@ -882,6 +789,99 @@
             restrict:     'E',
             scope:        {},
             template:'<div class="global"><div class="players row"><a class="user col-6 animated bounceInLeft" tabindex="0" data-content data-placement="right" data-toggle="popover" data-trigger="focus"><img src="img/user.png"></a> <a class="opponent col-6 animated bounceInRight" tabindex="1" data-content data-placement="left" data-toggle="popover" data-trigger="focus"><img src="img/opponent.png"></a></div><scoreboard is-game-over="ctrl.isGameOver" losses="ctrl.losses" ties="ctrl.ties" wins="ctrl.wins"></scoreboard><div data-ng-if="ctrl.isGameOver" class="row animated fadeInDown"><button class="btn btn-primary btn-lg btn-block" data-ng-click="ctrl.restart()">PLAY AGAIN</button></div><board cells="ctrl.cells" on-click="ctrl.select" user-value="ctrl.userValue"></board></div>'
+        };
+    }
+})();
+(function() {
+    'use strict';
+
+    angular.module('ticTacToe').controller(
+        'ScoreboardController',
+        ScoreboardController
+    );
+
+    ScoreboardController.$inject = [
+        '$scope'
+    ];
+
+    function ScoreboardController(
+        $scope
+    ) {
+        var ScoreboardController = this;
+
+        $scope.$watch(
+            'isGameOver',
+            function(isGameOver) {
+                ScoreboardController.isGameOver = isGameOver;
+            }
+        );
+
+        $scope.$watch(
+            'losses',
+            function(losses) {
+                if (ScoreboardController.losses < losses) {
+                    ScoreboardController.lastResult = false;
+                }
+
+                ScoreboardController.losses = losses;
+            }
+        );
+
+        $scope.$watch(
+            'ties',
+            function(ties) {
+                if (ScoreboardController.ties < ties) {
+                    ScoreboardController.lastResult = null;
+                }
+
+                ScoreboardController.ties = ties;
+            }
+        );
+
+        $scope.$watch(
+            'wins',
+            function(wins) {
+                if (ScoreboardController.wins < wins) {
+                    ScoreboardController.lastResult = true;
+                }
+
+                ScoreboardController.wins = wins;
+            }
+        );
+
+        ScoreboardController.reset = reset;
+        function reset() {
+
+        }
+
+        ScoreboardController.init = init;
+        function init() {
+            ScoreboardController.reset();
+        }
+
+        ScoreboardController.init();
+    }
+})();
+(function() {
+    'use strict';
+
+    angular.module('ticTacToe').directive(
+        'scoreboard',
+        scoreboard
+    );
+
+    function scoreboard() {
+        return {
+            controller:   'ScoreboardController',
+            controllerAs: 'ctrl',
+            restrict:     'E',
+            scope:        {
+                isGameOver: '=',
+                losses:     '=',
+                ties:       '=',
+                wins:       '='
+            },
+            template:'<div class="row"><div class="col text-center animated jackInTheBox" data-ng-class="{ \'animated flip\': ctrl.isGameOver && ctrl.lastResult === true }"><h3>WINS</h3><p>{{ ctrl.wins }}</p></div><div class="col text-center animated jackInTheBox" data-ng-class="{ \'animated flip\': ctrl.isGameOver && ctrl.lastResult === null }"><h3>TIES</h3><p>{{ ctrl.ties }}</p></div><div class="col text-center animated jackInTheBox" data-ng-class="{ \'animated flip\': ctrl.isGameOver && ctrl.lastResult === false }"><h3>LOSSES</h3><p>{{ ctrl.losses }}</p></div></div>'
         };
     }
 })();

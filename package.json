@@ -19,27 +19,27 @@
   "devDependencies": {
     "babel-core": "^6.26.3",
     "babelify": "^8.0.0",
-    "browser-sync": "^2.24.4",
-    "browserify": "^16.2.2",
+    "browser-sync": "^2.26.7",
+    "browserify": "^16.5.0",
     "browserify-resolutions": "^1.1.0",
-    "buffer": "^5.1.0",
+    "buffer": "^5.4.3",
     "gulp": "^3.9.1",
     "gulp-angular-embed-templates": "^2.3.0",
     "gulp-concat": "^2.6.1",
     "gulp-jshint": "^2.1.0",
-    "gulp-rename": "^1.2.3",
-    "gulp-sass": "^4.0.1",
-    "gulp-sourcemaps": "^2.6.4",
-    "gulp-uglify": "^3.0.0",
-    "jshint": "^2.9.5",
+    "gulp-rename": "^2.0.0",
+    "gulp-sass": "^4.0.2",
+    "gulp-sourcemaps": "^2.6.5",
+    "gulp-uglify": "^3.0.2",
+    "jshint": "^2.11.0",
     "run-sequence": "^2.2.1",
     "vinyl-buffer": "^1.0.1",
     "vinyl-source-stream": "^2.0.0"
   },
   "dependencies": {
-    "angular": "^1.7.1",
-    "animate.css": "^3.6.1",
-    "bootstrap": "^4.1.1",
-    "jquery": "^3.3.1"
+    "angular": "^1.7.9",
+    "animate.css": "^3.7.2",
+    "bootstrap": "^4.4.1",
+    "jquery": "^3.4.1"
   }
 }
