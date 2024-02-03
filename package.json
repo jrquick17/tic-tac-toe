@@ -19,7 +19,7 @@
   "devDependencies": {
     "babel-core": "^6.26.3",
     "babelify": "^8.0.0",
-    "browser-sync": "^2.26.7",
+    "browser-sync": "^3.0.2",
     "browserify": "^16.5.0",
     "browserify-resolutions": "^1.1.0",
     "buffer": "^5.4.3",
